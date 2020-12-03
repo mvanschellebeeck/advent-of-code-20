@@ -2,17 +2,14 @@ use std::fs;
 use std::collections::HashMap;
 
 fn main() {
-    let result = day01_p1().unwrap_or_else(|| panic!("No solution found for day1 p1"));
-    println!("{}", result);
+    println!("Day 1 part 1: {}", day01_p1().unwrap());
+    println!("Day 1 part 2: {}", day01_p2().unwrap());
 
-    let result2 = day01_p2().unwrap_or_else(|| panic!("No solution found for day1 p2"));
-    println!("{}", result2);
+    println!("Day 2 part 1: {}", day02_p1());
+    println!("Day 2 part 2: {}", day02_p2());
 
-    let result3 = day02_p1();
-    println!("{}", result3);
-
-    let result4 = day02_p2();
-    println!("{}", result4);
+    println!("Day 3 part 1: {}", day03_p1(3, 1));
+    println!("Day 3 part 2: {}", day03_p2());
 }
 
 
@@ -111,12 +108,31 @@ fn day02_p2() -> u32 {
     valid_passwords
 }
 
+fn day03_p1(right: u64, down: u64) -> u64 {
+    let input: Vec<Vec<char>> = fs::read_to_string("input/day03_p1" ).unwrap().lines()
+        .map(|line| line.chars().collect())
+        .collect();
 
+    let height = input.len() as u64;
+    let width = input.get(0).unwrap().len() as u64;
 
+    let mut row = 0u64;
+    let mut column = 0u64;
+    let mut trees = 0u64;
 
+    while (row + down) < height {
+        column += right;
+        row += down;
+        let pos: &char = input.get(row as usize).unwrap()
+            .get((column % width) as usize).unwrap();
+        if *pos == '#' {
+            trees += 1;
+        }
+    }
+    trees
+}
 
-
-
-
-
-
+fn day03_p2() -> u64 {
+    day03_p1(1, 1) * day03_p1(3, 1) * day03_p1(5, 1)
+        * day03_p1(7, 1) * day03_p1(1, 2)
+}
