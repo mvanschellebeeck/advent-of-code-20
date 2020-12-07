@@ -12,10 +12,8 @@ pub fn solve(part: u8) -> Option<i64> {
 fn binary_to_decimal(chars: Chars) -> i64 {
     chars
         .map(|c| match c {
-            'R' => 1,
-            'B' => 1,
-            'F' => 0,
-            'L' => 0,
+            'R' | 'B' => 1,
+            'F' | 'L' => 0,
             _ => panic!("Unexpected character: {}", c),
         })
         .rev()
