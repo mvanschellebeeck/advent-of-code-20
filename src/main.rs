@@ -6,6 +6,7 @@ mod day05;
 mod day06;
 mod day07;
 mod day08;
+mod day09;
 
 fn main() {
     let solvers = [
@@ -17,6 +18,7 @@ fn main() {
         day06::solve,
         day07::solve,
         day08::solve,
+        day09::solve,
     ];
 
     for (day, solve_part) in solvers.iter().enumerate() {

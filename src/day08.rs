@@ -27,7 +27,6 @@ fn part_1() -> Option<i64> {
 
     let mut acc = 0i64;
     let mut ptr = 0i64;
-    let mut new_ptr = 0i64;
     let mut seen_ptrs: HashSet<i64> = HashSet::new();
 
     loop {
@@ -35,16 +34,15 @@ fn part_1() -> Option<i64> {
         match instruction.as_ref() {
             "acc" => {
                 acc += offset;
-                new_ptr = ptr + 1;
+                ptr = ptr + 1;
             }
-            "jmp" => new_ptr = ptr + offset,
-            "nop" => new_ptr = ptr + 1,
+            "jmp" => ptr = ptr + offset,
+            "nop" => ptr = ptr + 1,
             _ => panic!("Unexpected instruction"),
         }
-        if seen_ptrs.contains(&new_ptr) {
+        if seen_ptrs.contains(&ptr) {
             break;
         }
-        ptr = new_ptr;
         seen_ptrs.insert(ptr);
     }
     Some(acc)
@@ -56,7 +54,6 @@ fn does_execute(swap_index: usize, new_ins: String) -> (bool, i64) {
 
     let mut acc = 0i64;
     let mut ptr = 0i64;
-    let mut new_ptr = 0i64;
     let mut seen_ptrs: HashSet<i64> = HashSet::new();
 
     loop {
@@ -64,21 +61,19 @@ fn does_execute(swap_index: usize, new_ins: String) -> (bool, i64) {
         match instruction.as_ref() {
             "acc" => {
                 acc += offset;
-                new_ptr = ptr + 1;
+                ptr = ptr + 1;
             }
-            "jmp" => new_ptr = ptr + offset,
-            "nop" => new_ptr = ptr + 1,
+            "jmp" => ptr = ptr + offset,
+            "nop" => ptr = ptr + 1,
             _ => panic!("Unexpected instruction"),
         }
-        if seen_ptrs.contains(&new_ptr) {
+        if seen_ptrs.contains(&ptr) {
             return (false, acc);
-            break;
         }
-        ptr = new_ptr;
-        seen_ptrs.insert(ptr);
         if ptr == instructions.len() as i64 {
             break;
         }
+        seen_ptrs.insert(ptr);
     }
     (true, acc)
 }
@@ -88,13 +83,10 @@ fn part_2() -> Option<i64> {
     let indices_to_swap: Vec<(usize, String)> = instructions
         .iter()
         .enumerate()
-        .filter(|(_, pair)| pair.0 == "jmp" || pair.0 == "nop")
-        .map(|(index, pair)| {
-            return if pair.0 == "jmp" {
-                (index, "nop".to_string())
-            } else {
-                (index, "jmp".to_string())
-            };
+        .map(|(index, pair)| match pair.0.as_ref() {
+            "jmp" => (index, "nop".to_string()),
+            "nop" => (index, "jmp".to_string()),
+            _ => (index, pair.0.to_string()),
         })
         .collect();
 
